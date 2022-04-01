@@ -15,6 +15,15 @@ datasource db {
 }
 
 model InputField {
-  id   String @id
-  name String
+  id        String    @id
+  name      String    @db.TinyText
+  tooltip   String?   @db.Text
+  inputKind InputKind
+}
+
+enum InputKind {
+  SIMPLE_TEXT
+  BIG_TEXT
+  INTEGER
+  DECIMAL
 }
