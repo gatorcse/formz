@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "dataProxy"]
 }
 
 generator pothos {
@@ -12,14 +12,16 @@ generator pothos {
 
 datasource db {
   provider             = "mysql"
-  referentialIntegrity = "prisma"
   url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 model InputField {
   id          Int       @id @default(autoincrement())
   name        String    @db.TinyText
   tooltip     String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   inputKind   InputKind
   inputForm   InputForm @relation(fields: [inputFormId], references: [id])
   inputFormId Int
@@ -36,5 +38,7 @@ model InputForm {
   id          Int          @id @default(autoincrement())
   name        String       @db.TinyText
   description String?      @db.Text
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   inputFields InputField[]
 }
