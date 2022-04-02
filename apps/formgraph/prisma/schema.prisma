@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 generator pothos {
@@ -10,11 +11,30 @@ generator pothos {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  referentialIntegrity = "prisma"
+  url                  = env("DATABASE_URL")
 }
 
 model InputField {
-  id   String @id
-  name String
+  id          Int       @id @default(autoincrement())
+  name        String    @db.TinyText
+  tooltip     String?   @db.Text
+  inputKind   InputKind
+  inputForm   InputForm @relation(fields: [inputFormId], references: [id])
+  inputFormId Int
+}
+
+enum InputKind {
+  SIMPLE_TEXT
+  BIG_TEXT
+  INTEGER
+  DECIMAL
+}
+
+model InputForm {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.TinyText
+  description String?      @db.Text
+  inputFields InputField[]
 }
